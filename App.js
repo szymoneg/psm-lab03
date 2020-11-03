@@ -1,89 +1,145 @@
-import { StatusBar } from 'expo-status-bar';
-import React, {Component, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import {TextInput} from "react-native-web";
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import Button from "./components/Button";
 
-export default class MyLayout extends Component {
+export default class MyLayout extends React.Component {
+    constructor() {
+        super();
+
+        this.state = { orientation: 'portrait' }
+    }
+
+    getOrientation = () => {
+        if( this.refs.rootView ) {
+            if( Dimensions.get('window').width < Dimensions.get('window').height ) {
+                this.setState({ orientation: 'portrait' });
+            }
+            else {
+                this.setState({ orientation: 'landscape' });
+            }
+        }
+    }
+
+    componentDidMount() {
+        this.getOrientation();
+
+        Dimensions.addEventListener( 'change', () => {
+            this.getOrientation();
+        });
+    }
+
+
+    componentWillUnmount() {
+        this.getOrientation();
+
+        Dimensions.removeEventListener('change',()=>{
+            this.getOrientation();
+        })
+    }
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.output}>0</View>
-                <TouchableOpacity style={styles.buttonNormal}>AC</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNotNormal}> </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonNormal,styles.buttonOperation]}>/</TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonNormal}>7</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>8</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>9</TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonNormal,styles.buttonOperation]}>X</TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonNormal}>4</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>5</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>6</TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonNormal,styles.buttonOperation]}>-</TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonNormal}>1</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>2</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>3</TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonNormal,styles.buttonOperation]}>+</TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonNotNormal}>0</TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNormal}>,</TouchableOpacity>
-
-                <TouchableOpacity style={[styles.buttonNormal,styles.buttonOperation]}>=</TouchableOpacity>
+                <View style={styles.result}>
+                    <Text style={styles.resultText}>123</Text>
+                </View>
+                <View style={styles.buttons}>
+                    <View ref = "rootView" style={[styles.operationLeft,
+                        this.state.orientation==="portrait" ? styles.shide : '',
+                        ]}>
+                        <Button hide name="y√x"/>
+                        <Button hide name="e×"/>
+                        <Button hide name="ln"/>
+                        <Button hide name="e"/>
+                        <Button hide name="π"/>
+                    </View>
+                    <View style={[styles.operationLeft,
+                        this.state.orientation==="portrait" ? styles.shide : '',]}>
+                        <Button hide name="x!"/>
+                        <Button hide name="10×"/>
+                        <Button hide name="log"/>
+                        <Button hide name="x²"/>
+                        <Button hide name="x³"/>
+                    </View>
+                    <View style={styles.numbers}>
+                        <View style={styles.row}>
+                            <Button name="AC"/>
+                            <Button double name=" "/>
+                        </View>
+                        <View style={styles.row}>
+                            <Button name="7"/>
+                            <Button name="8"/>
+                            <Button name="9"/>
+                        </View>
+                        <View style={styles.row}>
+                            <Button name="4"/>
+                            <Button name="5"/>
+                            <Button name="6"/>
+                        </View>
+                        <View style={styles.row}>
+                            <Button name="1"/>
+                            <Button name="2"/>
+                            <Button name="3"/>
+                        </View>
+                        <View style={styles.row}>
+                            <Button double name="0"/>
+                            <Button name=","/>
+                        </View>
+                    </View>
+                    <View style={styles.operation}>
+                        <Button name="/"/>
+                        <Button name="X"/>
+                        <Button name="-"/>
+                        <Button name="+"/>
+                        <Button name="="/>
+                    </View>
+                </View>
             </View>
         );
     }
-};
+}
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#505050",
-        color:"white",
-        width: 400,
-        height: 650,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-        flexWrap: 'wrap',
+    shide: {
+      display: 'none'
+    },
+    resultText:{
+        fontSize:72,
+        color:'white',
+    },
+    container:{
+        display: 'flex',
+        flex: 1,
+    },
+    row:{
         flexDirection: 'row',
-        alignContent: 'flex-end',
-        fontFamily: 'Arial',
-        fontSize: 42
+        flex: 1,
+        justifyContent: 'space-around',
+        alignItems: 'center'
     },
-    buttonNormal:{
-        width: 100,
-        height: 100,
-        borderTopWidth: 2,
-        borderRightWidth: 2,
-        justifyContent: 'center',
+    result:{
+        flex: 1,
+        backgroundColor: '#1C1C1C',
+        alignItems:'flex-end',
+        justifyContent: 'flex-end',
+    },
+    buttons:{
+        flex: 2,
+        flexDirection: 'row',
+    },
+    numbers:{
+        flex: 3,
+        backgroundColor: '#505050',
+    },
+    operation:{
+        flex: 1,
+        justifyContent: 'space-around',
         alignItems: 'center',
-        borderColor:"#1C1C1C"
+        backgroundColor: '#FF9500'
     },
-    buttonNotNormal:{
-        width: 200,
-        height: 100,
-        borderTopWidth: 2,
-        borderRightWidth: 2,
-        justifyContent: 'center',
+    operationLeft:{
+        flex: 1,
+        justifyContent: 'space-around',
         alignItems: 'center',
-        borderColor:"#1C1C1C"
-    },
-    buttonOperation:{
-        backgroundColor: "#FF9500",
-        borderTopWidth: 2,
-        borderRightWidth: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor:"#1C1C1C"
-    },
-    output:{
-        color:"white",
-        width: 400,
-        height: 150,
-        fontFamily: 'Arial',
-        fontSize: 94,
-        alignItems:"flex-end",
-        justifyContent:"center",
-        padding: 5.5,
+        backgroundColor: '#373737'
     }
 });
