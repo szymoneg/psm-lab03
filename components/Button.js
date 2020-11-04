@@ -2,15 +2,15 @@ import React from 'react';
 // import {TouchableOpacity} from "react-native-web";
 import {StyleSheet, Text,TouchableOpacity,Dimensions} from "react-native";
 
-export default class Button extends React.Component{
+export default class Button extends React.Component {
     render(props) {
-        const {double,hide} = this.props;
-        return(
+        const {double, hide,fun} = this.props;
+        return (
             <TouchableOpacity ref="rootView" style={[
                 styles.btn,
                 double ? styles.double : '',
-                ]}>
-                    <Text style={styles.btnText}>{this.props.name}</Text>
+            ]} onPress={fun}>
+                <Text style={styles.btnText}>{this.props.name}</Text>
             </TouchableOpacity>
         );
     }
