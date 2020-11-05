@@ -56,20 +56,19 @@ export default class MyLayout extends React.Component {
     }
 
     dot(){
-        if(this.state.result.toString().indexOf(',') !== -1) {
+        if(this.state.result.toString().indexOf('.') !== -1) {
             this.setState({result: this.state.result});
         }else{
-            this.setState({result: this.state.result + ','});
+            this.setState({result: this.state.result + '.'});
         }
     }
 
     operations(op){
         let x = parseFloat(this.state.result);
-        if (this.state.second!==0) {
-            this.calculate();
+        if (this.state.operation === '') {
+            this.setState({result:0,second:x,operation: op});
         }else {
-            //tego miejsca nie jestem pewny czy dobrze działa
-            this.setState({result: 0, second: x, operation: op})
+            this.setState({operation: op});
         }
     }
     calculate(){
@@ -95,7 +94,12 @@ export default class MyLayout extends React.Component {
                     }
                     break;
                 case 'yx':
-                    cal = Math.pow(second,1/result)
+                    if (second < 0){
+                        this.setState("Błąd");
+                        return;
+                    }else {
+                        cal = Math.pow(second, 1 / result)
+                    }
                     break;
             }
             this.setState({result:cal,second:0,operation:''});
@@ -106,7 +110,7 @@ export default class MyLayout extends React.Component {
 
     specialOperations(op){
         let cal;
-        const {result} = this.state;
+        let {result} = this.state;
         switch (op){
             case 'x2':
                 cal = Math.pow(result,2);
@@ -118,7 +122,12 @@ export default class MyLayout extends React.Component {
                 cal = Math.E * result;
                 break;
             case 'ln':
-                cal = Math.log(result);
+                if (result<0){
+                    this.setState("Błąd!");
+                    return;
+                }else {
+                    cal = Math.log(result);
+                }
                 break;
             case 'e':
                 cal = Math.E;
@@ -138,7 +147,23 @@ export default class MyLayout extends React.Component {
                 cal = Math.pow(10,result);
                 break;
             case 'log':
-                cal = Math.log10(result);
+                if (result<0){
+                    this.setState("Błąd!");
+                    return;
+                }else {
+                    cal = Math.log10(result);
+                }
+                break;
+            case '+/-':
+                cal = -result;
+                break;
+            case '%':
+                const { second, operation} = this.state;
+                if (operation === "x" || operation === "/") {
+                    cal = result / 100;
+                } else {
+                    cal = (second * result) / 100;
+                }
                 break;
         }
         this.setState({result:cal});
@@ -156,24 +181,25 @@ export default class MyLayout extends React.Component {
                     <View ref = "rootView" style={[styles.operationLeft,
                         this.state.orientation==="portrait" ? styles.shide : '',
                         ]}>
-                        <Button hide name="y√x" fun={()=>{this.operations('yx')}}/>
-                        <Button hide name="e×" fun={()=>{this.specialOperations('ex')}}/>
-                        <Button hide name="ln" fun={()=>{this.specialOperations('ln')}}/>
-                        <Button hide name="e" fun={()=>{this.specialOperations('e')}}/>
-                        <Button hide name="π" fun={()=>{this.specialOperations('pi')}}/>
+                        <Button name="y√x" fun={()=>{this.operations('yx')}}/>
+                        <Button name="e×" fun={()=>{this.specialOperations('ex')}}/>
+                        <Button name="ln" fun={()=>{this.specialOperations('ln')}}/>
+                        <Button name="e" fun={()=>{this.specialOperations('e')}}/>
+                        <Button name="π" fun={()=>{this.specialOperations('pi')}}/>
                     </View>
                     <View style={[styles.operationLeft,
                         this.state.orientation==="portrait" ? styles.shide : '',]}>
-                        <Button hide name="x!" fun={()=>{this.specialOperations('x!')}}/>
-                        <Button hide name="10×" fun={()=>{this.specialOperations('10x')}}/>
-                        <Button hide name="log" fun={()=>{this.specialOperations('log')}}/>
-                        <Button hide name="x²" fun={()=>{this.specialOperations('x2')}}/>
-                        <Button hide name="x³" fun={()=>{this.specialOperations('x3')}}/>
+                        <Button name="x!" fun={()=>{this.specialOperations('x!')}}/>
+                        <Button name="10×" fun={()=>{this.specialOperations('10x')}}/>
+                        <Button name="log" fun={()=>{this.specialOperations('log')}}/>
+                        <Button name="x²" fun={()=>{this.specialOperations('x2')}}/>
+                        <Button name="x³" fun={()=>{this.specialOperations('x3')}}/>
                     </View>
                     <View style={styles.numbers}>
                         <View style={styles.row}>
                             <Button name="AC" fun={()=>this.handleAC()}/>
-                            <Button double name=" "/>
+                            <Button name="+/-" fun={()=>{this.specialOperations('+/-')}}/>
+                            <Button name="%" fun={()=>{this.specialOperations('%')}}/>
                         </View>
                         <View style={styles.row}>
                             <Button name="7" fun={()=>{this.numbers(7)}}/>
@@ -192,7 +218,7 @@ export default class MyLayout extends React.Component {
                         </View>
                         <View style={styles.row}>
                             <Button double name="0" fun={()=>{this.numbers(0)}}/>
-                            <Button name="," fun={()=>{this.dot()}}/>
+                            <Button name="." fun={()=>{this.dot()}}/>
                         </View>
                     </View>
                     <View style={styles.operation}>

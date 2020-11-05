@@ -8,7 +8,7 @@ export default class Button extends React.Component {
         return (
             <TouchableOpacity ref="rootView" style={[
                 styles.btn,
-                double ? styles.double : '',
+                double ? styles.double : ''
             ]} onPress={fun}>
                 <Text style={styles.btnText}>{this.props.name}</Text>
             </TouchableOpacity>
