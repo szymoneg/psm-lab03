@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Button from "./components/Button";
+import { factorial } from 'mathjs'
 
 export default class MyLayout extends React.Component {
     constructor() {
@@ -67,26 +68,82 @@ export default class MyLayout extends React.Component {
         if (this.state.second!==0) {
             this.calculate();
         }else {
+            //tego miejsca nie jestem pewny czy dobrze działa
             this.setState({result: 0, second: x, operation: op})
-            //console.log(this.state.second);
         }
     }
-    //nie działa dodawańsko => żeby plus plus dało to samo co równa sie
     calculate(){
         let cal;
         const {operation,result,second} = this.state;
         if (operation!==''){
             switch (operation){
-                case '+': {
+                case '+':
                     cal = parseFloat(result) + second;
                     break;
-                }
+                case '-':
+                    cal = second - parseFloat(result);
+                    break;
+                case 'x':
+                    cal = parseFloat(result) * second;
+                    break;
+                case '/':
+                    if (parseFloat(result)===0){
+                        this.setState({result:"nie dziel przez 0"});
+                        return;
+                    }else {
+                        cal =  second / parseFloat(result);
+                    }
+                    break;
+                case 'yx':
+                    cal = Math.pow(second,1/result)
+                    break;
             }
             this.setState({result:cal,second:0,operation:''});
         }else {
             //console.log("test");
         }
     }
+
+    specialOperations(op){
+        let cal;
+        const {result} = this.state;
+        switch (op){
+            case 'x2':
+                cal = Math.pow(result,2);
+                break;
+            case 'x3':
+                cal = Math.pow(result,3);
+                break;
+            case 'ex':
+                cal = Math.E * result;
+                break;
+            case 'ln':
+                cal = Math.log(result);
+                break;
+            case 'e':
+                cal = Math.E;
+                break;
+            case 'pi':
+                cal = Math.PI;
+                break;
+            case 'x!':
+                if (result <= 0){
+                    this.setState("nie mozna!");
+                    return;
+                }else {
+                    cal = factorial(result);
+                }
+                break;
+            case '10x':
+                cal = Math.pow(10,result);
+                break;
+            case 'log':
+                cal = Math.log10(result);
+                break;
+        }
+        this.setState({result:cal});
+    }
+
 
 
     render() {
@@ -99,19 +156,19 @@ export default class MyLayout extends React.Component {
                     <View ref = "rootView" style={[styles.operationLeft,
                         this.state.orientation==="portrait" ? styles.shide : '',
                         ]}>
-                        <Button hide name="y√x"/>
-                        <Button hide name="e×"/>
-                        <Button hide name="ln"/>
-                        <Button hide name="e"/>
-                        <Button hide name="π"/>
+                        <Button hide name="y√x" fun={()=>{this.operations('yx')}}/>
+                        <Button hide name="e×" fun={()=>{this.specialOperations('ex')}}/>
+                        <Button hide name="ln" fun={()=>{this.specialOperations('ln')}}/>
+                        <Button hide name="e" fun={()=>{this.specialOperations('e')}}/>
+                        <Button hide name="π" fun={()=>{this.specialOperations('pi')}}/>
                     </View>
                     <View style={[styles.operationLeft,
                         this.state.orientation==="portrait" ? styles.shide : '',]}>
-                        <Button hide name="x!"/>
-                        <Button hide name="10×"/>
-                        <Button hide name="log"/>
-                        <Button hide name="x²"/>
-                        <Button hide name="x³"/>
+                        <Button hide name="x!" fun={()=>{this.specialOperations('x!')}}/>
+                        <Button hide name="10×" fun={()=>{this.specialOperations('10x')}}/>
+                        <Button hide name="log" fun={()=>{this.specialOperations('log')}}/>
+                        <Button hide name="x²" fun={()=>{this.specialOperations('x2')}}/>
+                        <Button hide name="x³" fun={()=>{this.specialOperations('x3')}}/>
                     </View>
                     <View style={styles.numbers}>
                         <View style={styles.row}>
@@ -139,9 +196,9 @@ export default class MyLayout extends React.Component {
                         </View>
                     </View>
                     <View style={styles.operation}>
-                        <Button name="/"/>
-                        <Button name="X"/>
-                        <Button name="-"/>
+                        <Button name="/" fun={()=>{this.operations('/')}}/>
+                        <Button name="X" fun={()=>{this.operations('x')}}/>
+                        <Button name="-" fun={()=>{this.operations('-')}}/>
                         <Button name="+" fun={()=>{this.operations('+')}}/>
                         <Button name="=" fun={()=>{this.calculate()}}/>
                     </View>
