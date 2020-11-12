@@ -4,7 +4,7 @@ import {StyleSheet, Text,TouchableOpacity,Dimensions} from "react-native";
 
 export default class Button extends React.Component {
     render(props) {
-        const {double, hide,fun} = this.props;
+        const {double,fun} = this.props;
         return (
             <TouchableOpacity ref="rootView" style={[
                 styles.btn,
