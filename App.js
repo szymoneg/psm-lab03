@@ -8,7 +8,7 @@ import {OperationSpecArr,Operation,Orange} from "./assets/OperationArr";
 export default class MyLayout extends React.Component {
     constructor() {
         super();
-        this.state = {result: 0, second:0, operation:''}
+        this.state = {result: "", second:0, operation:false}
     }
 
     getOrientation = () => {

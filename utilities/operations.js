@@ -1,4 +1,4 @@
-import {factorial} from "mathjs";
+import {factorial,evaluate} from "mathjs";
 
 const Calculations = (operations, value, state) => {
     switch (operations) {
@@ -6,128 +6,70 @@ const Calculations = (operations, value, state) => {
             return numbers(state, value);
         case "operation":
             return oper(state,value);
-        case "calculate":
-            return calculate(state);
         case "specialOperation":
             return specialOperations(state,value);
         case "dot":
             return dot(state);
         case "AC":
             return handleAC(state);
+        case "eval":
+            return evalFun(state);
     }
 }
 
 const numbers = (state, number) => {
     const {result} = state;
     if (result === 0 || result === "0") {
-        return {
-            result: number
-        }
+        return {result: number}
     } else {
-        return {
-            result: result.toString() + number
-        }
+        return {result: result.toString() + number,operation:false }
     }
 }
 
 const oper = (state, op) => {
-    let x = parseFloat(state.result);
-    if (state.operation === '') {
-        return {result:0,second:x,operation: op};
+    if (state.operation === false || ["(", ")"].includes(op)) {
+        console.log("chuj")
+        return {result: state.result.toString() + op, operation: true};
     }else {
-        return {operation: op};
+        console.log("sisuak")
+        return {result: state.result.toString().substring(0, state.result.length - 1) + op};
     }
 }
 
-const calculate = (state) =>{
-    let cal;
-    const {operation,result,second} = state;
-    if (operation!==''){
-        switch (operation){
-            case '+':
-                cal = parseFloat(result) + parseFloat(second);
-                break;
-            case '-':
-                cal = second - parseFloat(result);
-                break;
-            case 'X':
-                cal = parseFloat(result) * second;
-                break;
-            case '/':
-                if (parseFloat(result)===0){
-                    return {result:"nie dziel przez 0"};
-                }else {
-                    cal =  second / parseFloat(result);
-                }
-                break;
-            case 'yx':
-                if (second < 0){
-                    return {result: "Błąd"};
-                }else {
-                    cal = Math.pow(second, 1 / result)
-                }
-                break;
-        }
-        return {result:cal,second:0,operation:''};
-    }
-}
 
 const specialOperations = (state,oper) =>{
     let cal;
     let {result} = state;
+    let logiXDD = evaluate(result);
     switch (oper){
         case 'x2':
-            cal = Math.pow(result,2);
-            break;
+            return {result: result.toString()+oper, operation: false };
         case 'x3':
-            cal = Math.pow(result,3);
-            break;
-        case 'ex':
-            cal = Math.E * result;
-            break;
-        case 'ln':
+            return {result: result.toString()+oper, operation: false };
+        case 'e^':
+            return {result: result.toString()+oper, operation: false };
+        case 'log(':
             if (result<0){
-                return {result: "Błąd!"};
+                return {result: "Błąd!", operation: false};
             }else {
-                cal = Math.log(result);
+                return {result: result.toString()+oper, operation: false };
             }
             break;
         case 'e':
-            cal = Math.E;
-            break;
+            return {result: result.toString()+oper, operation: false };
         case 'pi':
-            cal = Math.PI;
-            break;
-        case 'x!':
-            if (result <= 0){
-                return {result: "nie mozna!"};
-            }else {
-                cal = factorial(result);
-            }
-            break;
-        case '10x':
-            cal = Math.pow(10,result);
-            break;
+            return {result: result.toString()+oper, operation: false }
+        case '10^':
+            return {result: result.toString()+oper, operation: false }
         case 'log':
             if (result<0){
                 return {result: "Błąd!"};
             }else {
-                cal = Math.log10(result);
-            }
-            break;
-        case '+/-':
-            cal = -result;
-            break;
-        case '%':
-            const { second, operation} = state;
-            if (operation === "x" || operation === "/") {
-                cal = result / 100;
-            } else {
-                cal = (second * result) / 100;
+                cal = Math.log10(parseFloat(logiXDD));
             }
             break;
     }
-    return {result:cal};
+    return {result:cal.toString()};
 }
 
 const dot = (state) => {
@@ -138,8 +80,16 @@ const dot = (state) => {
     }
 }
 
-const handleAC = (state) =>{
-    return {result: 0,second:0,operation:''};
+const handleAC = () =>{
+    return {result: '',operation:false};
+}
+
+const evalFun = (state) => {
+    return {result: evaluate(state.result), operation: false}
+}
+
+const validateEval = (state) =>{
+
 }
 
 export default Calculations;

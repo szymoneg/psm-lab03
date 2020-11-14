@@ -1,14 +1,14 @@
 const OperationSpecArr = [
     [
-        {name: 'y√x', operation: 'operation', value: 'yx'},
-        {name: 'e×', operation: 'specialOperation', value: 'ex'},
-        {name: 'ln', operation: 'specialOperation', value: 'ln'},
+        {name: 'y√x', operation: 'operation', value: '^(1/'},
+        {name: 'e×', operation: 'specialOperation', value: 'e^'},
+        {name: 'ln', operation: 'specialOperation', value: 'log('},
         {name: 'e', operation: 'specialOperation', value: 'e'},
         {name: 'π', operation: 'specialOperation', value: 'pi'},
     ],
     [
-        {name: 'x!', operation: 'operation', value: 'x!'},
-        {name: '10x', operation: 'specialOperation', value: '10x'},
+        {name: 'x!', operation: 'operation', value: '!'},
+        {name: '10×', operation: 'specialOperation', value: '10^'},
         {name: 'log', operation: 'specialOperation', value: 'log'},
         {name: 'x²', operation: 'specialOperation', value: 'x2'},
         {name: 'x³', operation: 'specialOperation', value: 'x3'},
@@ -18,8 +18,8 @@ const OperationSpecArr = [
 const Operation = [
     [
         {name: 'AC', operation: 'AC'},
-        {name: '+/-', operation: 'specialOperation', value: '+/-'},
-        {name: '%', operation: 'specialOperation', value: '%'}
+        {name: '(', operation: 'operation', value: '('},
+        {name: ')', operation: 'operation', value: ')'}
     ],
     [
         {name: '7', operation: 'number', value: 7},
@@ -47,7 +47,7 @@ const Orange = [
         {name: 'X', operation: 'operation', value: 'X'},
         {name: '-', operation: 'operation', value: '-'},
         {name: '+', operation: 'operation', value: '+'},
-        {name: '=', operation: 'calculate', value: '='},
+        {name: '=', operation: 'eval', value: '='},
     ],
 ]
 
